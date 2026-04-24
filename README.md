@@ -8,14 +8,36 @@ NEXUS is a premium, local-first web-based AI interface built with Vanilla HTML, 
   <img src="assets/settings-ui.png" alt="Settings & API Modals" width="49%">
 </div>
 
-## ✨ Features
+## ✨ Core Features & Technical Highlights
 
-- **Local-First Privacy (BYOK):** Bring Your Own Key. Your OpenRouter, Google Gemini, and Hugging Face tokens are encrypted and stored purely in your browser's LocalStorage. Infinite chat history is maintained entirely locally.
-- **Multiplexer LLM Factory:** Dynamically route requests between Gemini, OpenRouter, and Serverless Hugging Face APIs with fallback redundancies. (Includes support for Gemini 2.5 structured *Thinking* modes).
-- **Vision & Multimodality:** Drag and drop images! NEXUS automatically parses attached images, handles client-side `<canvas>` compression limits to save LocalStorage footprint, and compiles the Base64 output into standard OpenAI Vision Arrays for multimodal models.
-- **AI Image Generation:** Direct integration with Hugging Face Serverless APIs. Select `FLUX.1 Schnell` or `Stable Diffusion`, type a prompt, and get high-res AI images injected cleanly into your conversation.
-- **Claude-Style Code Artifacts:** An integrated dual-pane sandbox editor. AI code blocks feature a "Preview" button that pushes HTML/JS/CSS to a sandboxed live-rendering iframe right within the app interface!
-- **Voice I/O:** Complete Speech-to-Text (STT) and Web Speech Text-to-Speech (TTS) integration. 
+NEXUS isn't just a basic API wrapper—it's a deeply engineered client-side client meant to mirror the advanced features of enterprise platforms like Claude or ChatGPT, completely for free. 
+
+### 🔐 Uncompromising Local-First Architecture
+* **Bring Your Own Key (BYOK):** Your API keys (OpenRouter, Gemini, Hugging Face) and entire chat history are encrypted and stored in `localStorage` securely inside your browser. No middleman servers, no rate-limiting, and zero telemetry tracking.
+* **Smart Local History:** Conversations are managed using an SQLite-style local manager indexing timestamps, models, branching prompts, and invisible metadata.
+
+### 🧠 Multiplexer LLM Factory
+* **Dynamic Routing:** NEXUS intelligently routes backend prompts depending on the active model. Select `Gemini 2.5 Flash`, and it routes natively through the `Google Generative Language API`. Select `Llama 3 70B`, and it bridges seamlessly through OpenRouter. 
+* **Native Thinking Support:** Full UI integration for structural "Thinking" protocols (like those output by Gemini 2.5). Animated think-blocks expand and collapse inside the chat automatically, capturing backend reasoning tokens cleanly. 
+
+### 🖼️ Seamless Multimodality & Vision
+* **Auto-Compressing Image Attachments:** Upload visual data for vision-capable models! NEXUS utilizes an internal client-side `<canvas>` downscaling engine to intelligently compress images to 800px. This guarantees high-performance network payloads and prevents your local storage from overflowing with 4K metadata.
+* **Standardized JSON Compilation:** Base64 image data is parsed into standard `{"type": "image_url"}` Vision Arrays right before execution, guaranteeing fluid compatibility across Gemini and OpenAI-styled models.
+
+### 🎨 Generative Text-to-Image Built In
+* **Hugging Face Inference:** Enter your free HF Token to instantly unlock state-of-the-art image diffusion models like **FLUX.1 Schnell** and **Stable Diffusion 3.5**.
+* **Zero-Touch Renders:** When talking to an Image Gen model, NEXUS hooks the Hugging Face Serverless pipeline, retrieves the generated binary `blob`, builds a temporary local URL, and injects the resulting artwork seamlessly back into your chat UI using the Markdown parser. 
+
+### 💻 Dual-Pane Workspace & Claude-Style Artifacts
+* **The Web Sandbox:** Generated any code? Hit the glowing "Preview" button inside the AI's Markdown. NEXUS immediately throws the raw code into an adjustable, sandboxed `<iframe>` to the right of your chat. 
+* **Syntax Highlighting:** Raw code is powered by `highlight.js` logic with one-click copy and file export capabilities allowing rapid frontend development tracking.
+
+### 🎙️ Web Voice I/O Engine
+* **Native OS Integrations:** Speak directly to NEXUS by pressing the microphone. Responses can be seamlessly spoken back to you via the `Speech Synthesis API`.
+
+### 💅 Brutalist Glassmorphism UI
+* **Theme Engine:** Clean toggling between dark-mode abyss blacks and sleek light-mode aesthetics.
+* **Contextual Modals:** Z-index engineered custom drop downs, responsive flexbox chat bubbles, and auto-resizing text boxes designed exclusively from scratch.
 
 ## 🚀 Quick Setup
 
