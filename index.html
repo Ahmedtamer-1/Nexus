@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXUS — AI Chat Interface</title>
+  <meta name="description" content="A premium multi-model AI chat interface powered by OpenRouter. Supports streaming, thinking mode, voice i/o, code editing and file export." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Highlight.js theme (swapped on light/dark toggle) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme" />
+
+  <link rel="stylesheet" href="css/style.css?v=11" />
+</head>
+<body>
+
+<div id="app" data-theme="dark">
+
+  <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-mark">◈</span>
+        <span class="logo-text">NEXUS</span>
+      </div>
+      <button id="new-chat-btn" class="new-chat-btn" title="New Chat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+
+    <div class="search-wrapper">
+      <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="Search conversations…" autocomplete="off" />
+    </div>
+
+    <div class="conv-section-label">Recent</div>
+    <div class="conversation-list" id="conversation-list"></div>
+
+    <div class="sidebar-footer">
+      <button id="theme-toggle-btn" class="sf-btn" title="Toggle Theme">
+        <svg id="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg id="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <span id="theme-label">Light Mode</span>
+      </button>
+      <button id="settings-btn" class="sf-btn" title="Settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════ MAIN AREA ═══════════════ -->
+  <main class="main-area" id="main-area">
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="tb-left">
+        <button id="sidebar-toggle" class="icon-btn" title="Toggle Sidebar">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        </button>
+
+        <div class="model-picker-wrap">
+          <!-- Custom dropdown (native select is uncontrollable in Chrome) -->
+          <div class="custom-select-wrap" id="model-select-wrap">
+            <button class="cs-trigger" id="model-trigger" type="button" title="Select model">
+              <span id="model-display-text">Loading models…</span>
+              <svg class="cs-arrow" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="cs-dropdown" id="model-dropdown"></div>
+          </div>
+          <!-- Hidden select keeps value for JS code that reads it -->
+          <select id="model-select" style="display:none"></select>
+          <span class="free-badge" id="model-badge">FREE</span>
+        </div>
+      </div>
+
+      <div class="tb-center" id="thinking-controls">
+        <button id="thinking-toggle" class="thinking-btn" title="Toggle Extended Thinking">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 4-2.35 7.5-5.8 9.2M12 2a10 10 0 0 0-10 10c0 4 2.35 7.5 5.8 9.2"/><circle cx="12" cy="12" r="3"/></svg>
+          Thinking
+        </button>
+        <div class="effort-pills">
+          <button class="effort-pill" data-effort="low" id="effort-low">Low</button>
+          <button class="effort-pill active" data-effort="medium" id="effort-medium">Med</button>
+          <button class="effort-pill" data-effort="high" id="effort-high">High</button>
+        </div>
+      </div>
+
+      <div class="tb-right">
+        <button id="editor-toggle-btn" class="icon-btn" title="Toggle Editor">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Messages -->
+    <div class="messages-container" id="messages-container">
+
+      <!-- Welcome Screen -->
+      <div class="welcome-screen" id="welcome-screen">
+        <div class="wl-logo">◈</div>
+        <h1 class="wl-title">NEXUS</h1>
+        <p class="wl-sub">Your intelligent multi-model workspace</p>
+        <div class="wl-cards">
+          <div class="wl-card" data-prompt="Explain the difference between machine learning and deep learning">
+            <span class="wl-card-icon">🧠</span>
+            <span>ML vs Deep Learning explained</span>
+          </div>
+          <div class="wl-card" data-prompt="Write a Python function that reverses a string without using slicing">
+            <span class="wl-card-icon">🐍</span>
+            <span>Write a Python function</span>
+          </div>
+          <div class="wl-card" data-prompt="Draft a concise professional email declining a partnership offer">
+            <span class="wl-card-icon">✉</span>
+            <span>Draft a professional email</span>
+          </div>
+          <div class="wl-card" data-prompt="Give me 5 unique SaaS startup ideas for 2025">
+            <span class="wl-card-icon">💡</span>
+            <span>Brainstorm startup ideas</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /messages-container -->
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <!-- Staging container for attached images -->
+      <div id="image-staging" class="image-staging hidden">
+        <img id="staged-image" src="" alt="Staged image" />
+        <button id="remove-staged-btn" class="remove-staged-btn" title="Remove attachment">✕</button>
+      </div>
+
+      <div class="input-glass">
+        <textarea id="message-input" rows="1" placeholder="Message NEXUS… (Enter to send · Shift+Enter for new line)"></textarea>
+        <div class="input-btns">
+            <button id="edit-prompt-btn" class="input-icon-btn" title="Edit last message" style="display:none">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <input type="file" id="image-upload-input" accept="image/*" style="display:none" />
+            <button id="attach-btn" class="input-icon-btn" title="Attach Image">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>
+            <button id="mic-btn" class="input-icon-btn" title="Voice Input">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+          </button>
+          <button id="send-btn" class="send-btn" title="Send">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="input-hint">Free models via OpenRouter · API keys stored locally · Never sent anywhere</p>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════ EDITOR PANEL ═══════════════ -->
+  <aside class="editor-panel hidden" id="editor-panel">
+    <div id="editor-resizer" class="ep-resizer"></div>
+    <div class="ep-header">
+      <div class="ep-filename" id="editor-filename">untitled.md</div>
+      <div class="ep-controls">
+        <select id="file-type-select" class="ep-type-select">
+          <option value="md">Markdown (.md)</option>
+          <option value="txt">Plain Text (.txt)</option>
+          <option value="js">JavaScript (.js)</option>
+          <option value="ts">TypeScript (.ts)</option>
+          <option value="py">Python (.py)</option>
+          <option value="html">HTML (.html)</option>
+          <option value="css">CSS (.css)</option>
+          <option value="json">JSON (.json)</option>
+          <option value="sql">SQL (.sql)</option>
+          <option value="sh">Shell (.sh)</option>
+        </select>
+        <button id="export-btn" class="ep-btn" title="Download File">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button id="close-editor-btn" class="ep-btn" title="Close Editor">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="ep-tabs">
+      <button class="ep-tab active" id="tab-edit" data-tab="edit">Edit</button>
+      <button class="ep-tab" id="tab-preview" data-tab="preview">Preview</button>
+    </div>
+
+    <textarea id="editor-textarea" class="ep-editor" placeholder="Start writing, or push AI output here with → Editor…"></textarea>
+    <div id="editor-preview" class="ep-preview hidden"></div>
+  </aside>
+
+</div><!-- /#app -->
+
+<!-- ═══════════════ SETTINGS MODAL ═══════════════ -->
+<div class="modal-overlay hidden" id="settings-modal">
+  <div class="glass-modal">
+    <div class="modal-hdr">
+      <h2>Settings</h2>
+      <button id="close-settings-btn" class="modal-close-btn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="settings-sec">
+        <h3 class="sec-title">API Configuration</h3>
+        <div class="form-group">
+          <label class="form-lbl">OpenRouter API Key</label>
+          <div class="key-row">
+            <input type="password" id="openrouter-key-input" class="form-inp" placeholder="sk-or-v1-…" autocomplete="off" />
+            <button id="toggle-key-vis" class="key-vis-btn" title="Show/Hide Key">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <p class="form-hint">Get a free key at <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai</a></p>
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">Google Gemini API Key</label>
+          <div class="key-row">
+            <input type="password" id="gemini-key-input" class="form-inp" placeholder="AIzaSy…" autocomplete="off" />
+            <button id="toggle-gemini-key-vis" class="key-vis-btn" title="Show/Hide Key">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <p class="form-hint">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a></p>
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">Hugging Face Token</label>
+          <div class="key-row">
+            <input type="password" id="hf-key-input" class="form-inp" placeholder="hf_…" autocomplete="off" />
+            <button id="toggle-hf-key-vis" class="key-vis-btn" title="Show/Hide Key">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <p class="form-hint">Get a free token at <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">Hugging Face Settings</a></p>
+        </div>
+      </div>
+
+      <div class="settings-sec">
+        <h3 class="sec-title">System Prompt</h3>
+        <textarea id="system-prompt-input" class="form-textarea" placeholder="You are a helpful, precise AI assistant…" rows="4"></textarea>
+      </div>
+
+      <div class="settings-sec">
+        <h3 class="sec-title">Model Parameters</h3>
+        <div class="form-group">
+          <label class="form-lbl">Temperature <span class="param-val" id="temp-display">0.7</span></label>
+          <input type="range" id="temperature-slider" class="form-range" min="0" max="2" step="0.05" value="0.7" />
+          <div class="range-ends"><span>Precise</span><span>Creative</span></div>
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">Max Tokens <span class="param-val" id="tokens-display">2048</span></label>
+          <input type="range" id="max-tokens-slider" class="form-range" min="256" max="16384" step="256" value="2048" />
+          <div class="range-ends"><span>256</span><span>16 384</span></div>
+        </div>
+      </div>
+
+    </div><!-- /modal-body -->
+
+    <div class="modal-ftr">
+      <button id="save-settings-btn" class="btn-primary">Save Settings</button>
+      <button id="cancel-settings-btn" class="btn-ghost">Cancel</button>
+    </div>
+  </div>
+</div><!-- /#settings-modal -->
+
+<!-- Toast notification -->
+<div class="toast hidden" id="toast"></div>
+
+<!-- ═══ Libraries (CDN) ═══ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<!-- App scripts (order matters) -->
+<script src="config.js?v=12"></script>
+<script src="js/settings.js?v=12"></script>
+<script src="js/history.js?v=12"></script>
+<script src="js/renderer.js?v=12"></script>
+<script src="js/speech.js?v=12"></script>
+<script src="js/editor.js?v=12"></script>
+<script src="js/exporter.js?v=12"></script>
+<script src="js/llm/providers/HuggingFaceProvider.js?v=12"></script>
+<script src="js/llm/providers/GeminiProvider.js?v=12"></script>
+<script src="js/llm/providers/OpenRouterProvider.js?v=12"></script>
+<script src="js/llm/LLMFactory.js?v=12"></script>
+<script src="js/app.js?v=12"></script>
+
+</body>
+</html>
