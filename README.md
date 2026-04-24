@@ -2,10 +2,10 @@
 
 NEXUS is a premium, local-first web-based AI interface built with Vanilla HTML, CSS, and JS. It features a stunning brutalist glassmorphism aesthetic and connects you instantly to the world's most powerful LLMs without the need for an external backend database or Node server. Everything runs seamlessly in your browser with zero data telemetry.
 
-<img src="assets/main-ui.png" alt="NEXUS UI" width="100%">
+<img src="assets/flux-car.png" alt="NEXUS UI - FLUX Image Generation" width="100%">
 <div style="display:flex; gap:10px; margin-top: 10px;">
-  <img src="assets/main-ui.png" width="49%">
-  <img src="assets/code-editor.png" width="49%">
+  <img src="assets/split-editor.png" alt="Sandboxed Dual-Pane Editor" width="49%">
+  <img src="assets/settings-ui.png" alt="Settings & API Modals" width="49%">
 </div>
 
 ## ✨ Features
