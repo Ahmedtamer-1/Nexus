@@ -1,0 +1,8 @@
+NON-DISCLOSURE AGREEMENT
+This Non-Disclosure Agreement (this "Agreement") is entered into by and between Alpha Corp ("Disclosing Party") and Beta Supply ("Receiving Party"). 
+
+1. Confidential Information: "Confidential Information" means all non-public, proprietary information.
+2. Force Majeure: Neither party shall be held liable for failure to perform any obligation under this Agreement if such failure is caused by natural disasters, acts of God, governmental action, or pandemics including COVID-19.
+3. Penalty Clause: In the event of late delivery, Beta Supply agrees to pay a penalty of $50 per package per day. This is a genuine pre-estimate of loss.
+
+IN WITNESS WHEREOF, the parties hereto have executed this Agreement as of the date first written above.

@@ -13,6 +13,15 @@ class LLMFactory {
   _getProvider(modelId = '') {
     const isGemini = modelId.startsWith('gemini-') || modelId.startsWith('gemma-');
     const isHF = modelId.startsWith('hf-');
+    const isRag = modelId === 'local-legal-rag';
+
+    if (isRag) {
+      const key = this.settings.get('openrouterKey'); // Uses openrouterKey as OpenAI API Key
+      if (!this._providers.rag || this._providers.rag.apiKey !== key) {
+        this._providers.rag = new RagProvider(key);
+      }
+      return this._providers.rag;
+    }
 
     if (isGemini) {
       const key = this.settings.get('geminiKey');
@@ -60,6 +69,9 @@ class LLMFactory {
     if (hfKey) {
       HuggingFaceProvider.FREE_MODELS.forEach(m => models.push(m));
     }
+
+    // Local Legal RAG agent (always available)
+    RagProvider.MODELS.forEach(m => models.push(m));
 
     // OpenRouter models
     const orKey = this.settings.get('openrouterKey');

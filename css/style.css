@@ -1467,3 +1467,51 @@ body {
   .tb-center { display: none; }
   .model-select { max-width: 140px; }
 }
+
+/* -- Persona Modal -- */
+.persona-modal { width: 650px !important; max-width: 95vw; }
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 15px 0 25px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.persona-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 15px;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.persona-card:hover { border-color: var(--border-str); background: var(--glass-hover); }
+.persona-card.active { border-color: var(--accent); background: rgba(107, 76, 255, 0.1); }
+.persona-emoji { font-size: 24px; }
+.persona-name { font-weight: 600; font-size: 14px; }
+.persona-desc { font-size: 11px; color: var(--txt3); line-height: 1.4; }
+.custom-prompt-sec {
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.custom-prompt-sec label { font-size: 12px; font-weight: 600; color: var(--txt3); }
+.custom-prompt-sec textarea {
+  background: var(--inp);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  color: var(--txt);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+}
+
